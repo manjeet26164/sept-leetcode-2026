@@ -1,0 +1,40 @@
+// Q.210  -> Course Schedule II
+//    Java solution.  BFS(kahn's algo)
+
+class Solution {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        List<List<Integer>> adj=new ArrayList<>();
+        for(int i=0;i<numCourses;i++){
+            adj.add(new ArrayList<>());
+        }
+        int[] inDegree=new int[numCourses];
+        for(int i=0;i<prerequisites.length;i++){
+            int a=prerequisites[i][0];
+            int b=prerequisites[i][1];
+            adj.get(b).add(a);
+            inDegree[a]++;
+        }
+        Queue<Integer> q=new LinkedList<>();  
+        for(int i=0;i<numCourses;i++){
+            if(inDegree[i]==0){
+                q.add(i);           // Add all the edges with 0 inDegree into the q.
+            }
+        }
+        int[] ans=new int[numCourses];
+        int idx=0;
+        while(!q.isEmpty()){
+            int front=q.remove();
+            ans[idx++]=front;
+            for(int ele: adj.get(front)){
+                inDegree[ele]--;
+                if(inDegree[ele]==0){
+                    q.add(ele);
+                }
+            }
+        }
+        if(idx!=numCourses){
+            return new int[0];
+        }
+        return ans;
+    }
+}
