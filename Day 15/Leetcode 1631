@@ -1,0 +1,70 @@
+// Q.1631 -> Path with minimum effort.
+// java solution with minHeap <Triplet>.
+
+// Code 1.
+
+class Solution {
+    public class Triplet implements Comparable<Triplet>{
+        int row;
+        int col;
+        int height;
+        public Triplet(int row, int col, int height){
+            this.row=row;
+            this.col=col;
+            this.height=height;
+        }
+        public int compareTo(Triplet t){
+            return this.height-t.height;
+        }
+    }
+    public int minimumEffortPath(int[][] heights) {
+        int m=heights.length;
+        int n=heights[0].length;
+        int[][] ans=new int[m][n];
+        for(int i=0;i<m;i++){
+            Arrays.fill(ans[i],Integer.MAX_VALUE);
+        }
+        ans[0][0]=0;
+        PriorityQueue<Triplet> pq=new PriorityQueue<>();
+        pq.add(new Triplet(0,0,0));
+        while(!pq.isEmpty()){
+            Triplet top=pq.remove();
+            int row=top.row, col=top.col, height=top.height;
+            if(row==m-1 && col==n-1) break;
+            if(row>0){          // Moving up
+                int effort=Math.abs(heights[row][col]-heights[row-1][col]);
+                effort= Math.max(effort,height);
+                if(effort<heights[row-1][col]){
+                    ans[row-1][col]=effort;
+                    pq.add(new Triplet(row-1,col,effort));
+                }
+
+            }
+            if(col>0){      // Moving left
+                int effort=Math.abs(heights[row][col]-heights[row][col-1]);
+                effort= Math.max(effort,height);
+                if(effort<heights[row][col-1]){
+                    ans[row][col-1]=effort;
+                    pq.add(new Triplet(row,col-1,effort));
+                }  
+            }
+            if(row<m-1){    // Moving down
+                int effort=Math.abs(heights[row][col]-heights[row+1][col]);
+                effort= Math.max(effort,height);
+                if(effort<heights[row+1][col]){
+                    ans[row+1][col]=effort;
+                    pq.add(new Triplet(row+1,col,effort));
+                }
+            }
+            if(col<n-1){    // Moving right
+                int effort=Math.abs(heights[row][col]-heights[row][col+1]);
+                effort= Math.max(effort,height);
+                if(effort<heights[row][col+1]){
+                    ans[row][col+1]=effort;
+                    pq.add(new Triplet(row,col+1,effort));
+                } 
+            }
+        }
+        return ans[m-1][n-1];
+    }
+}
