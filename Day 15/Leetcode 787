@@ -61,3 +61,62 @@ class Solution {
         
     }
 }
+
+
+
+// method 2 
+// just make linkedList instead of heap. bcz all nodes which are going inside pq arecoming out as FIFO so use queue. just change the priority queue to linkedlist.
+
+class Solution {
+    public class Pair{
+        int node;
+        int price;
+        public Pair(int node, int price){
+            this.node=node;
+            this.price=price;
+        }
+    }
+    public class Triplet {
+        int node;
+        int price;
+        int stop;
+        public Triplet(int node, int price, int stop){
+            this.node=node;
+            this.price=price;
+            this.stop=stop;
+        }
+    }
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        List<List<Pair>> adj=new ArrayList<>();
+        for(int i=0;i<n;i++){
+            adj.add(new ArrayList<>());
+        }
+        for(int i=0;i<flights.length;i++){
+            int a=flights[i][0];
+            int b=flights[i][1];
+            int price=flights[i][2];
+            adj.get(a).add(new Pair(b,price));
+        }
+        Queue<Triplet> pq=new LinkedList<>();
+        pq.add(new Triplet(src,0,0));
+        int[] ans=new int[n];
+        Arrays.fill(ans,Integer.MAX_VALUE);
+        ans[src]=0;
+        while(!pq.isEmpty()){
+            Triplet top=pq.remove();
+            int node=top.node;
+            int cost=top.price;
+            int stop=top.stop;
+            if(stop==k+1) continue;
+            for(Pair ele:adj.get(node)){               
+                int totalCost=cost+ele.price;
+                if(totalCost<ans[ele.node]){
+                    ans[ele.node]=totalCost;
+                    pq.add(new Triplet(ele.node,totalCost,stop+1));
+                }
+            }
+        }
+        return ans[dst] == Integer.MAX_VALUE ? -1: ans[dst];
+        
+    }
+}
