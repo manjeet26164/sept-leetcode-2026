@@ -1,0 +1,32 @@
+Q.567 --> permutation in string.
+// java solution 
+
+class Solution {
+    public boolean checkInclusion(String s1, String s2) {
+        if(s1.length()>s2.length()) return false;
+        int[] freq=new int[26];
+        for(char ele: s1.toCharArray()){
+            freq[ele - 'a']++;
+        }
+        int i=0;
+        int j=0;
+        int count=s1.length();
+        while(j<s2.length()){
+            char ch=s2.charAt(j);
+            if(freq[ch-'a']>0){
+                count--;
+            }
+            freq[ch-'a']--;
+            if(j-i+1==s1.length()){
+                if(count==0) return true;
+                char remove=s2.charAt(i);
+                freq[remove-'a']++;
+                if(freq[remove-'a']>0) count++;
+                i++;
+            }
+            j++;
+
+        }
+        return false;
+    }
+}
